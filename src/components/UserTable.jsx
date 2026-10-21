@@ -1,7 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 function UserTable({ users, onEdit, onDelete }) {
   const [search,setSearch]=useState("");
+  const searchref=useRef(null)
+
+  useEffect(()=>{
+     searchref.current.focus()
+  },[])
   const filteredusers=useMemo(()=>{
     return users.filter((u)=>u.name.toLowerCase().includes(search.toLowerCase()))
   },[users,search])
@@ -13,6 +18,7 @@ function UserTable({ users, onEdit, onDelete }) {
       <div className="search-box">
         <span className="search-icon">🔍</span>
         <input
+        ref={searchref}
           className="search-input"
           placeholder="Search by name..."
           value={search}
