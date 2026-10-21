@@ -1,6 +1,30 @@
+import { useMemo, useState } from "react";
+
 function UserTable({ users, onEdit, onDelete }) {
+  const [search,setSearch]=useState("");
+  const filteredusers=useMemo(()=>{
+    return users.filter((u)=>u.name.toLowerCase().includes(search.toLowerCase()))
+  },[users,search])
   return (
-    <table>
+    <>
+    <div className="toolbar">
+      <h2 className="toolbar-title">Users</h2>
+
+      <div className="search-box">
+        <span className="search-icon">🔍</span>
+        <input
+          className="search-input"
+          placeholder="Search by name..."
+          value={search}
+          onChange={(e)=>setSearch(e.target.value)}
+        />
+        {search && (
+          <button className="search-clear" onClick={()=>setSearch("")} aria-label="Clear search">✕</button>
+        )}
+      </div>
+    </div>
+
+     <table>
       <thead>
         <tr>
           <th>ID</th>
@@ -13,12 +37,14 @@ function UserTable({ users, onEdit, onDelete }) {
         </tr>
       </thead>
       <tbody>
-        {users.length === 0 ? (
+        {filteredusers.length === 0 ? (
           <tr>
-            <td colSpan="7" className="empty">No users yet</td>
+            <td colSpan="7" className="empty">
+              {search ? `No users match "${search}"` : "No users yet"}
+            </td>
           </tr>
         ) : (
-          users.map((user) => (
+          filteredusers.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
@@ -35,6 +61,8 @@ function UserTable({ users, onEdit, onDelete }) {
         )}
       </tbody>
     </table>
+    </>
+   
   );
 }
 
